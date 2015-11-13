@@ -791,10 +791,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Transmit(I2C_HandleTypeDef *hi2c, uint8_t *pData
       return  HAL_ERROR;
     }
 
-    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
-    {
-      return HAL_BUSY;
-    }
+//    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
+//    {
+//      return HAL_BUSY;
+//    }
 
     /* Process Locked */
     __HAL_LOCK(hi2c);
@@ -806,10 +806,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Transmit(I2C_HandleTypeDef *hi2c, uint8_t *pData
     hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
     /* Wait until ADDR flag is set */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, Timeout) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
+   // if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, Timeout) != HAL_OK)
+    //{
+   //   return HAL_TIMEOUT;
+   // }
 
     /* Clear ADDR flag */
     __HAL_I2C_CLEAR_ADDRFLAG(hi2c);
@@ -857,13 +857,13 @@ HAL_StatusTypeDef HAL_I2C_Slave_Transmit(I2C_HandleTypeDef *hi2c, uint8_t *pData
     __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
 
     /* Disable Address Acknowledge */
-    hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+//    hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
     /* Wait until BUSY flag is reset */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, Timeout) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
+//    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, Timeout) != HAL_OK)
+//    {
+//      return HAL_TIMEOUT;
+//    }
 
     hi2c->State = HAL_I2C_STATE_READY;
 
@@ -896,10 +896,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
       return  HAL_ERROR;
     }
 
-    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
-    {
-      return HAL_BUSY;
-    }
+//    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
+//    {
+//      return HAL_BUSY;
+//    }
 
     /* Process Locked */
     __HAL_LOCK(hi2c);
@@ -911,12 +911,12 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
     hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
     /* Wait until ADDR flag is set */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, Timeout) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
-
-    /* Clear ADDR flag */
+//    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, Timeout) != HAL_OK)
+//    {
+//      return HAL_TIMEOUT;
+//    }
+//
+//    /* Clear ADDR flag */
     __HAL_I2C_CLEAR_ADDRFLAG(hi2c);
 
     while(Size > 0)
@@ -949,13 +949,13 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
     __HAL_I2C_CLEAR_STOPFLAG(hi2c);
 
     /* Disable Address Acknowledge */
-    hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  //  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
     /* Wait until BUSY flag is reset */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, Timeout) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
+//    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, Timeout) != HAL_OK)
+//    {
+//      return HAL_TIMEOUT;
+//    }
 
     hi2c->State = HAL_I2C_STATE_READY;
 
@@ -1426,10 +1426,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Transmit_DMA(I2C_HandleTypeDef *hi2c, uint8_t *p
       return  HAL_ERROR;
     }
 
-    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
-    {
-      return HAL_BUSY;
-    }
+//    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
+//    {
+//      return HAL_BUSY;
+//    }
 
     /* Process Locked */
     __HAL_LOCK(hi2c);
@@ -1457,10 +1457,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Transmit_DMA(I2C_HandleTypeDef *hi2c, uint8_t *p
     hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
     /* Wait until ADDR flag is set */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, I2C_TIMEOUT_ADDR_SLAVE) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
+//    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, I2C_TIMEOUT_ADDR_SLAVE) != HAL_OK)
+//    {
+//      return HAL_TIMEOUT;
+//    }
 
     /* If 7bit addressing mode is selected */
     if(hi2c->Init.AddressingMode == I2C_ADDRESSINGMODE_7BIT)
@@ -1511,10 +1511,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive_DMA(I2C_HandleTypeDef *hi2c, uint8_t *pD
       return  HAL_ERROR;
     }
 
-    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
-    {
-      return HAL_BUSY;
-    }
+//    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
+//    {
+//      return HAL_BUSY;
+//    }
 
     /* Process Locked */
     __HAL_LOCK(hi2c);
@@ -1542,10 +1542,10 @@ HAL_StatusTypeDef HAL_I2C_Slave_Receive_DMA(I2C_HandleTypeDef *hi2c, uint8_t *pD
     hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
     /* Wait until ADDR flag is set */
-    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, I2C_TIMEOUT_ADDR_SLAVE) != HAL_OK)
-    {
-      return HAL_TIMEOUT;
-    }
+//    if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, RESET, I2C_TIMEOUT_ADDR_SLAVE) != HAL_OK)
+//    {
+//      return HAL_TIMEOUT;
+//    }
 
     /* Clear ADDR flag */
     __HAL_I2C_CLEAR_ADDRFLAG(hi2c);
@@ -3341,7 +3341,7 @@ static void I2C_DMASlaveTransmitCplt(DMA_HandleTypeDef *hdma)
   __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
 
   /* Disable Address Acknowledge */
-  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  //hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3349,10 +3349,10 @@ static void I2C_DMASlaveTransmitCplt(DMA_HandleTypeDef *hdma)
   hi2c->XferCount = 0;
 
   /* Wait until BUSY flag is reset */
-  if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, I2C_TIMEOUT_FLAG) != HAL_OK)
-  {
-    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
-  }
+//  if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, I2C_TIMEOUT_FLAG) != HAL_OK)
+//  {
+//    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
+//  }
 
   hi2c->State = HAL_I2C_STATE_READY;
 
@@ -3383,7 +3383,7 @@ static void I2C_DMAMasterReceiveCplt(DMA_HandleTypeDef *hdma)
   hi2c->Instance->CR2 &= ~I2C_CR2_LAST;
 
   /* Disable Acknowledge */
-  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  //hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3428,7 +3428,7 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
   __HAL_I2C_CLEAR_STOPFLAG(hi2c);
 
   /* Disable Address Acknowledge */
-  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+ // hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3436,10 +3436,10 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
   hi2c->XferCount = 0;
 
   /* Wait until BUSY flag is reset */
-  if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, I2C_TIMEOUT_FLAG) != HAL_OK)
-  {
-    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
-  }
+//  if(I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, I2C_TIMEOUT_FLAG) != HAL_OK)
+//  {
+//    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
+//  }
 
   hi2c->State = HAL_I2C_STATE_READY;
 
