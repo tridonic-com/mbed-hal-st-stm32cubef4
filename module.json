@@ -15,7 +15,7 @@
     "mbed-hal-st-stm32cubef4"
   ],
   "dependencies": {
-    "mbed-hal-st-stm32f4": "tridonic-com/mbed-hal-st-stm32f4#tridonic"
+    "mbed-hal-st-stm32f4": "ivan-adzic-tridonic-com/mbed-hal-st-stm32f4#i2c-dma"
   },
   "targetDependencies": {}
 }
