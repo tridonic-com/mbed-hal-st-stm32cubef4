@@ -2495,6 +2495,18 @@ void HAL_I2C_ER_IRQHandler(I2C_HandleTypeDef *hi2c)
   *         the configuration information for I2C module
   * @retval None
   */
+ __weak void HAL_I2C_SlaveAddressMatchCallback(I2C_HandleTypeDef *hi2c)
+{
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the HAL_I2C_TxCpltCallback could be implemented in the user file
+   */
+}
+/**
+  * @brief  Master Tx Transfer completed callbacks.
+  * @param  hi2c: pointer to a I2C_HandleTypeDef structure that contains
+  *         the configuration information for I2C module
+  * @retval None
+  */
  __weak void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
@@ -3341,7 +3353,7 @@ static void I2C_DMASlaveTransmitCplt(DMA_HandleTypeDef *hdma)
   __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
 
   /* Disable Address Acknowledge */
-  //hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3353,6 +3365,9 @@ static void I2C_DMASlaveTransmitCplt(DMA_HandleTypeDef *hdma)
 //  {
 //    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
 //  }
+
+  /* Enable Address Acknowledge */
+  hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
   hi2c->State = HAL_I2C_STATE_READY;
 
@@ -3383,7 +3398,7 @@ static void I2C_DMAMasterReceiveCplt(DMA_HandleTypeDef *hdma)
   hi2c->Instance->CR2 &= ~I2C_CR2_LAST;
 
   /* Disable Acknowledge */
-  //hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3395,6 +3410,9 @@ static void I2C_DMAMasterReceiveCplt(DMA_HandleTypeDef *hdma)
   {
     hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
   }
+
+  /* Enable Address Acknowledge */
+  hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
   hi2c->State = HAL_I2C_STATE_READY;
 
@@ -3428,7 +3446,7 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
   __HAL_I2C_CLEAR_STOPFLAG(hi2c);
 
   /* Disable Address Acknowledge */
- // hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   /* Disable DMA Request */
   hi2c->Instance->CR2 &= ~I2C_CR2_DMAEN;
@@ -3440,6 +3458,9 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
 //  {
 //    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
 //  }
+
+  /* Enable Address Acknowledge */
+  hi2c->Instance->CR1 |= I2C_CR1_ACK;
 
   hi2c->State = HAL_I2C_STATE_READY;
 
@@ -3548,7 +3569,7 @@ static void I2C_DMAError(DMA_HandleTypeDef *hdma)
   I2C_HandleTypeDef* hi2c = (I2C_HandleTypeDef*)((DMA_HandleTypeDef*)hdma)->Parent;
 
   /* Disable Acknowledge */
-  hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
+  //hi2c->Instance->CR1 &= ~I2C_CR1_ACK;
 
   hi2c->XferCount = 0;
 
