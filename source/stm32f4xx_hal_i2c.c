@@ -2495,18 +2495,6 @@ void HAL_I2C_ER_IRQHandler(I2C_HandleTypeDef *hi2c)
   *         the configuration information for I2C module
   * @retval None
   */
- __weak void HAL_I2C_SlaveAddressMatchCallback(I2C_HandleTypeDef *hi2c)
-{
-  /* NOTE : This function Should not be modified, when the callback is needed,
-            the HAL_I2C_TxCpltCallback could be implemented in the user file
-   */
-}
-/**
-  * @brief  Master Tx Transfer completed callbacks.
-  * @param  hi2c: pointer to a I2C_HandleTypeDef structure that contains
-  *         the configuration information for I2C module
-  * @retval None
-  */
  __weak void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
@@ -2971,6 +2959,9 @@ static HAL_StatusTypeDef I2C_Slave_AF(I2C_HandleTypeDef *hi2c)
   */
 static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint32_t Timeout)
 {
+  /* Enable Acknowledge */
+  hi2c->Instance->CR1 |= I2C_CR1_ACK;
+
   /* Generate Start */
   hi2c->Instance->CR1 |= I2C_CR1_START;
 
