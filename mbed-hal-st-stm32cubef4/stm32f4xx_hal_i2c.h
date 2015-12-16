@@ -127,6 +127,8 @@ typedef struct
 
   uint8_t                    rStart;     /*!< Repeated start enabled/disabled*/
 
+  uint8_t                    tDir;       /*!< Transfer direction (slave mode)*/
+
   uint8_t                    *pBuffPtr;  /*!< Pointer to I2C transfer buffer */
 
   uint16_t                   XferSize;   /*!< I2C transfer size              */
