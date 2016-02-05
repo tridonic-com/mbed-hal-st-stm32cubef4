@@ -238,6 +238,8 @@ static HAL_StatusTypeDef I2C_SlaveReceive_BTF(I2C_HandleTypeDef *hi2c);
 static HAL_StatusTypeDef I2C_Slave_ADDR(I2C_HandleTypeDef *hi2c);
 static HAL_StatusTypeDef I2C_Slave_STOPF(I2C_HandleTypeDef *hi2c);
 static HAL_StatusTypeDef I2C_Slave_AF(I2C_HandleTypeDef *hi2c);
+
+static volatile uint8_t i2c_AF_received;
 /**
   * @}
   */
@@ -2470,6 +2472,7 @@ void HAL_I2C_ER_IRQHandler(I2C_HandleTypeDef *hi2c)
       hi2c->ErrorCode |= HAL_I2C_ERROR_AF;
       /* Clear AF flag */
       __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
+      i2c_AF_received = 1;	// set flag for wait function
     }
   }
 
@@ -2976,6 +2979,7 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
     return HAL_TIMEOUT;
   }
 
+  i2c_AF_received = 0;		// reset flag for acknowledge failure
   if(hi2c->Init.AddressingMode == I2C_ADDRESSINGMODE_7BIT)
   {
     /* Send slave address */
@@ -3006,7 +3010,7 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
   /* Wait until ADDR flag is set */
   if(I2C_WaitOnMasterAddressFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, Timeout) != HAL_OK)
   {
-    if(hi2c->ErrorCode == HAL_I2C_ERROR_AF)
+    if(hi2c->ErrorCode == HAL_I2C_ERROR_AF)	// Ackn. failure
     {
       return HAL_ERROR;
     }
@@ -3667,7 +3671,8 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
 
   while(__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET)
   {
-    if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_AF) == SET)
+    if((__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_AF) == SET) ||
+      (i2c_AF_received != 0))				// set in HAL_I2C_ER_IRQHandler (when the SR-flag is cleared)
     {
       /* Generate Stop */
       hi2c->Instance->CR1 |= I2C_CR1_STOP;
@@ -3689,6 +3694,9 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
     {
       if((Timeout == 0)||((HAL_GetTick() - tickstart ) > Timeout))
       {
+        /* Generate Stop */
+        hi2c->Instance->CR1 |= I2C_CR1_STOP;
+
         hi2c->State= HAL_I2C_STATE_READY;
 
         /* Process Unlocked */
