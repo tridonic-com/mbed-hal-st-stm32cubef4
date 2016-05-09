@@ -260,6 +260,8 @@ typedef struct
   * @{
   */
 
+#define USE_STM32F4XX_HAL_I2C__FIX  (1)
+
 /** @brief Reset I2C handle state
   * @param  __HANDLE__: specifies the I2C Handle.
   *         This parameter can be I2C where x: 1, 2, or 3 to select the I2C peripheral.
