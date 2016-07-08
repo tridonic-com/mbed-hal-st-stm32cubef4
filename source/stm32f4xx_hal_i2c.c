@@ -3716,6 +3716,12 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
 {
   uint32_t tickstart = 0;
 
+  // Variables introduced to prevent a deadlock caused by being run in interrupt mode and not allowing for changes of the tick
+  uint32_t checkTickerCounter;
+  uint8_t temp_for_debug;
+  temp_for_debug = 0;
+  checkTickerCounter = 0;
+
   /* Get tick */
   tickstart = HAL_GetTick();
 
@@ -3724,12 +3730,19 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
   {
     while(__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET)
     {
+      /* Increment counter as a partial solution for the
+       * https://git.dev.zgrp.net/stc/tri-stc-driver-acdc/issues/9 problem */
+      checkTickerCounter++;
+
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
       {
-        if((Timeout == 0)||((HAL_GetTick() - tickstart ) > Timeout))
+        if((Timeout == 0)||((HAL_GetTick() - tickstart ) > Timeout) || (checkTickerCounter > Timeout*2^31))
         {
           hi2c->State= HAL_I2C_STATE_READY;
+
+          // JUST FOR TEST
+          checkTickerCounter++;
 
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
@@ -3743,12 +3756,19 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
   {
     while(__HAL_I2C_GET_FLAG(hi2c, Flag) != RESET)
     {
+      /* Increment counter as a partial solution for the
+       * https://git.dev.zgrp.net/stc/tri-stc-driver-acdc/issues/9 problem */
+      checkTickerCounter++;
+
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
       {
-        if((Timeout == 0)||((HAL_GetTick() - tickstart ) > Timeout))
+        if((Timeout == 0)||((HAL_GetTick() - tickstart ) > Timeout) || (checkTickerCounter > Timeout*2^31))
         {
           hi2c->State= HAL_I2C_STATE_READY;
+
+          // JUST FOR TEST
+          checkTickerCounter++;
 
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
