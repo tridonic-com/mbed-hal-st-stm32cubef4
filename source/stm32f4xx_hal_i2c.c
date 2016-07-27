@@ -1346,6 +1346,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit_DMA(I2C_HandleTypeDef *hi2c, uint16_t 
     if(__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY) == SET)
     {
       if(StopPrevious) {
+    	  printf("HAL_BUSY\n");
           return HAL_BUSY;
       }
     }
