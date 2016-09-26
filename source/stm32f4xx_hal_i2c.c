@@ -2626,7 +2626,7 @@ __weak void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
   *         the configuration information for I2C module
   * @retval None
   */
-__weak void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+__weak void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c, uint8_t jb)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_I2C_TxCpltCallback could be implemented in the user file
@@ -3000,7 +3000,7 @@ static HAL_StatusTypeDef I2C_Slave_STOPF(I2C_HandleTypeDef *hi2c)
 
   hi2c->State = HAL_I2C_STATE_READY;
 
-  HAL_I2C_SlaveRxCpltCallback(hi2c);
+  HAL_I2C_SlaveRxCpltCallback(hi2c, 1);  // 1-stop condition reached, 0 - dma finished transaction
 
   return HAL_OK;
 }
@@ -3565,7 +3565,10 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
 //  {
 //    hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
 //  }
+  uint8_t bStopFlag = 0;
+  if(hi2c->State == HAL_I2C_STATE_READY) bStopFlag = 1;
 
+  //printf("stop flag %d state %d \n\r", bStopFlag, hi2c->State);
   /* Clear STOPF flag */
   __HAL_I2C_CLEAR_STOPFLAG(hi2c);
 
@@ -3595,7 +3598,7 @@ static void I2C_DMASlaveReceiveCplt(DMA_HandleTypeDef *hdma)
   }
   else
   {
-    HAL_I2C_SlaveRxCpltCallback(hi2c);
+    HAL_I2C_SlaveRxCpltCallback(hi2c, bStopFlag);  // 1-stop condition reached, 0 - dma finished transaction
   }
 }
 
